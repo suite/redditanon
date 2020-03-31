@@ -20,39 +20,24 @@ window.addEventListener("load", function() {
     console.log(self.value);
     let profileElem = self.parentNode.getElementsByTagName('img')[0];
     (selectVal === "random") ? profileElem.src = "${randProfilePic}" : profileElem.src = "${profilePic}";
-
-    var data = { type: "FROM_PAGE", text: selectVal };
-    window.postMessage(data, "*");
   }
   `;
   document.documentElement.appendChild(ss);
 
-  //Insert after click "reply" -- now kind of useless..
-  // document.body.addEventListener("click", function(event) {
-  //   if (event.target.innerText === "Reply") {
-  //     setTimeout(() => {
-  //       insertHtml(username, profilePic);
-  //     });
-  //   }
-  // });
+  //Insert after click "reply"
+  document.body.addEventListener("click", function(event) {
+    if (
+      event.target.innerText === "COMMENT" ||
+      event.target.innerText === "REPLY"
+    ) {
+      let elem = event.target.parentNode;
+      for (let i = 0; i < 2; i++) {
+        elem = elem.parentNode;
+      }
 
-  // Check every 500ms to add html.
-  setInterval(function() {
-    insertHtml(username, profilePic);
-  }, 500);
-
-  //Recieve from site
-  window.addEventListener("message", function(event) {
-    // We only accept messages from ourselves
-    if (event.source != window) return;
-
-    if (event.data.type && event.data.type == "FROM_PAGE") {
-      console.log("Content script received message: " + event.data.text);
-
-      //Send to background.js
       if (typeof chrome.app.isInstalled !== "undefined") {
         chrome.runtime.sendMessage({
-          value: event.data.text
+          value: elem.querySelector("select").value
         });
       } else {
         alert("Appeared to have lost connection... Please refresh");
@@ -61,10 +46,18 @@ window.addEventListener("load", function() {
     }
   });
 
-  chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
-    alert(msg.action);
-    location.reload();
-  });
+  // Check every 500ms to add html.
+  setInterval(function() {
+    insertHtml(username, profilePic);
+  }, 500);
+
+  //TODO: CHECK IF CHROME EXTENSION
+  if (typeof chrome.app.isInstalled !== "undefined") {
+    chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
+      alert(msg.action);
+      location.reload();
+    });
+  }
 });
 
 let setList = [];
