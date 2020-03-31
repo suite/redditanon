@@ -57,7 +57,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.value) {
-    console.log(request.value);
+    console.log("SETTING VALUE: " + request.value);
     selectValue = request.value;
   }
 });
