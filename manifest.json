@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "RedditAnon",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Comment and reply anonymously on Reddit",
   "background": {
     "scripts": ["background.js"],
     "persistent": true
@@ -14,6 +14,16 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["tabs", "webRequest", "webRequestBlocking", "*://*/*"],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Reddit Anon"
+  },
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
+    "storage"
+  ],
   "manifest_version": 2
 }

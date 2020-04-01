@@ -35,16 +35,25 @@ chrome.webRequest.onBeforeRequest.addListener(
 
       if (selectValue === "random") {
         //Send comment to custom server
-        sendComment(contentObj, selectValue).then(() => {
-          console.log("got it", contentObj, selectValue);
-          chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-            chrome.tabs.sendMessage(tabs[0].id, {
-              action: `Sent comment using [${selectValue}]`
+        sendComment(contentObj, selectValue)
+          .then(resp => {
+            console.log("got it", contentObj, selectValue, resp);
+            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+              chrome.tabs.sendMessage(tabs[0].id, {
+                action: `Sent comment using [${selectValue}]`,
+                url: resp["url"]
+              });
+            });
+          })
+          .catch(err => {
+            chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+              chrome.tabs.sendMessage(tabs[0].id, {
+                action: err.message
+              });
             });
           });
 
-          return { cancel: true };
-        });
+        return { cancel: true };
       }
 
       // for debug:
@@ -57,24 +66,40 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.value) {
-    console.log("SETTING VALUE: " + request.value);
     selectValue = request.value;
   }
 });
 
+const getApiUrl = () => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get("api", function(item) {
+      resolve(item["api"] ? item["api"] : "http://localhost:3000/");
+    });
+  });
+};
+
 const sendComment = async (contentObj, selectValue) => {
-  const rawResponse = await fetch("http://localhost:3000/", {
+  let url = await getApiUrl();
+  console.log("Settings retrieved", url);
+
+  let { contentText, contentId } = contentObj;
+  const rawResponse = await fetch(url, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ contentObj, selectValue })
+    body: JSON.stringify({ contentText, contentId, selectValue })
   });
 
   const content = await rawResponse.json();
 
-  console.log(content);
+  if (rawResponse.ok) {
+    return content;
+  } else {
+    console.log("Error response look here", content, rawResponse.ok);
+    throw new Error("Error submitting comment/reply.");
+  }
 };
 
 //api_type=json&return_rtjson=true&thing_id=t1_flt7kxo&text&richtext_json={"document":[{"e":"par","c":[{"e":"text","t":"1234"}]}]}

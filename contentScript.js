@@ -16,8 +16,6 @@ window.addEventListener("load", function() {
   ss.innerHTML = `
   function selectChange(self) {
     let selectVal = self.value;
-    console.log(self);
-    console.log(self.value);
     let profileElem = self.parentNode.getElementsByTagName('img')[0];
     (selectVal === "random") ? profileElem.src = "${randProfilePic}" : profileElem.src = "${profilePic}";
   }
@@ -55,7 +53,11 @@ window.addEventListener("load", function() {
   if (typeof chrome.app.isInstalled !== "undefined") {
     chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
       alert(msg.action);
-      location.reload();
+      if (msg.url) {
+        location.href = msg.url;
+      } else {
+        location.reload();
+      }
     });
   }
 });
