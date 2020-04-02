@@ -101,17 +101,3 @@ const sendComment = async (contentObj, selectValue) => {
     throw new Error("Error submitting comment/reply.");
   }
 };
-
-//api_type=json&return_rtjson=true&thing_id=t1_flt7kxo&text&richtext_json={"document":[{"e":"par","c":[{"e":"text","t":"1234"}]}]}
-//api_type=json&return_rtjson=true&thing_id=t1_flt7qyn&text&richtext_json={"document":[{"e":"par","c":[{"e":"text","t":"1235"}]}]}
-//data["document"][0]["c"][0]["t"];
-
-//api_type=json&return_rtjson=true&thing_id=t3_fr02ax&text&richtext_json={"document":[{"e":"par","c":[{"e":"text","t":"sad"}]}]}
-
-/*
-Mobile:
-api_type: ["json"]
-raw_json: ["1"]
-text: ["sad"]
-thing_id: ["t3_fr02ax"] 
-*/

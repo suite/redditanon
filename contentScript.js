@@ -1,5 +1,5 @@
 window.addEventListener("load", function() {
-  console.log("hello");
+  console.log("Loaded RedditAnon");
 
   let username = document.getElementsByClassName("_2BMnTatQ5gjKGK5OWROgaG")[0]
     .innerText;
@@ -22,7 +22,7 @@ window.addEventListener("load", function() {
   `;
   document.documentElement.appendChild(ss);
 
-  //Insert after click "reply"
+  //Send selectValue when you reply
   document.body.addEventListener("click", function(event) {
     if (
       event.target.innerText === "COMMENT" ||
@@ -49,7 +49,6 @@ window.addEventListener("load", function() {
     insertHtml(username, profilePic);
   }, 500);
 
-  //TODO: CHECK IF CHROME EXTENSION
   if (typeof chrome.app.isInstalled !== "undefined") {
     chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
       alert(msg.action);
