@@ -9,7 +9,7 @@ Anonymously comment and reply on Reddit with ease.
 - Select "Load Unpacked" and select downloaded repo
 
 #### Server:
-- Install [redditanon-server](https://github.com/suite/redditanon-server) 
+- Install and run [redditanon-server](https://github.com/suite/redditanon-server) 
 - Enter server address in extension popup
 
 ## Screenshots
